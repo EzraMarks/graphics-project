@@ -21,7 +21,7 @@ GLWidget::GLWidget(QGLFormat format, QWidget *parent)
       m_quad(nullptr), m_sphere(nullptr),
       m_blurFBO1(nullptr), m_blurFBO2(nullptr),
       m_particlesFBO1(nullptr), m_particlesFBO2(nullptr),
-      m_firstPass(true), m_evenPass(true), m_resolutionX(500), m_resolutionY(10),
+      m_firstPass(true), m_evenPass(true), m_resolutionX(512), m_resolutionY(256),
       m_angleX(-0.5f), m_angleY(0.5f), m_zoom(4.f)
 {
 }
