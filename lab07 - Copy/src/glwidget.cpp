@@ -63,14 +63,14 @@ void GLWidget::initializeGL() {
     // TODO: [Task 6] Fill in the positions and UV coordinates to draw a fullscreen quad
     // We've already set the vertex attributes for you, so be sure to follow those specifications
     // (triangle strip, 4 vertices, position followed by UVs)
-    std::vector<GLfloat> quadData = {-1, 1, 0,
-                                     0, 0,
-                                     -1,  -1, 0,
-                                     0,  1,
-                                      1, 1, 0,
-                                      1, 0,
-                                      1,  -1, 0,
-                                      1,  1};
+    std::vector<GLfloat> quadData = {-1,  1, 0,
+                                      0,  1,
+                                     -1, -1, 0,
+                                      0,  0,
+                                      1,  1, 0,
+                                      1,  1,
+                                      1, -1, 0,
+                                      1,  0};
     m_quad = std::make_unique<OpenGLShape>();
     m_quad->setVertexData(&quadData[0], quadData.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_TRIANGLE_STRIP, 4);
     m_quad->setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
@@ -147,9 +147,6 @@ void GLWidget::drawBlur() {
 }
 
 void GLWidget::drawParticles() {
-    int resolutionX = 256;
-    int resolutionY = 512;
-
     auto prevFBO = m_evenPass ? m_particlesFBO1 : m_particlesFBO2;
     auto nextFBO = m_evenPass ? m_particlesFBO2 : m_particlesFBO1;
     float firstPass = m_firstPass ? 1.0f : 0.0f;
@@ -163,9 +160,9 @@ void GLWidget::drawParticles() {
     GLint locFirstPass = glGetUniformLocation(m_particleUpdateProgram, "firstPass");
     glUniform1f(locFirstPass, firstPass);
     GLint locResolutionX = glGetUniformLocation(m_particleUpdateProgram, "resolutionX");
-    glUniform1i(locResolutionX, resolutionX);
+    glUniform1i(locResolutionX, m_resolutionX);
     GLint locResolutionY = glGetUniformLocation(m_particleUpdateProgram, "resolutionY");
-    glUniform1i(locResolutionY, resolutionY);
+    glUniform1i(locResolutionY, m_resolutionY);
     GLint locPrevChemicals = glGetUniformLocation(m_particleUpdateProgram, "prevChemicals");
     glUniform1i(locPrevChemicals, 0);
 
@@ -185,12 +182,12 @@ void GLWidget::drawParticles() {
     glUniform1i(locChemicals, 0);
 
     GLint locDrawResolutionX = glGetUniformLocation(m_particleDrawProgram, "resolutionX");
-    glUniform1i(locDrawResolutionX, resolutionX);
+    glUniform1i(locDrawResolutionX, m_resolutionX);
     GLint locDrawResolutionY = glGetUniformLocation(m_particleDrawProgram, "resolutionY");
-    glUniform1i(locDrawResolutionY, resolutionY);
+    glUniform1i(locDrawResolutionY, m_resolutionY);
 
     glBindVertexArray(m_particlesVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3 * resolutionX * resolutionY);
+    glDrawArrays(GL_TRIANGLES, 0, 3 * m_resolutionX * m_resolutionY);
     glBindVertexArray(0);
 
     glActiveTexture(GL_TEXTURE0);

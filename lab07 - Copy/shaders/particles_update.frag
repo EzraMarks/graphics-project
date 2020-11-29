@@ -17,7 +17,7 @@ const float dt = 0.0167; // 1 sec/60 fps
 float hash(float n) { return fract(sin(n)*753.5453123); }
 
 vec4 initChemicals(int indexX, int indexY) {
-    if (indexY > 254) {
+    if (indexX > 246 && indexX < 266 && indexY > 118 && indexY < 138) {
         return vec4(1.0, 1.0, 0, 0);
     } else {
         return vec4(0.0, 0.0, 0, 0);
@@ -34,14 +34,12 @@ vec4 updateChemicals() {
 
 
 void main() {
-//    int indexX = int(uv.x * resolutionX);
-//    int indexY = int(uv.y * resolutionY);
+    int indexX = int(uv.x * resolutionX);
+    int indexY = int(uv.y * resolutionY);
 
-    chemicals = vec4(uv.x, uv.y, 0, 0);
-
-//    if (firstPass > 0.5) {
-//        chemicals = initChemicals(indexX, indexY);
-//    } else {
-//        chemicals = updateChemicals();
-//    }
+    if (firstPass > 0.5) {
+        chemicals = initChemicals(indexX, indexY);
+    } else {
+        chemicals = updateChemicals();
+    }
 }
