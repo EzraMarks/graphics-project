@@ -81,8 +81,8 @@ void GLWidget::initializeGL() {
     // It doesn't need any data associated with it, so we don't have to make a full VAO instance
     glGenVertexArrays(1, &m_particlesVAO);
     // TODO [Task 13] Create m_particlesFBO1 and 2 with std::make_shared
-    m_particlesFBO1 = std::make_shared<FBO>(2, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_resolutionX, m_resolutionY, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE, TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
-    m_particlesFBO2 = std::make_shared<FBO>(2, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_resolutionX, m_resolutionY, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE, TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
+    m_particlesFBO1 = std::make_shared<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_resolutionX, m_resolutionY, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE, TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
+    m_particlesFBO2 = std::make_shared<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_resolutionX, m_resolutionY, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE, TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
 
     // Print the max FBO dimension.
     GLint maxRenderBufferSize;
@@ -159,8 +159,6 @@ void GLWidget::drawParticles() {
     glUseProgram(m_particleUpdateProgram);
     glActiveTexture(GL_TEXTURE0);
     prevFBO->getColorAttachment(0).bind();
-    glActiveTexture(GL_TEXTURE1);
-    prevFBO->getColorAttachment(1).bind();
 
     GLint locFirstPass = glGetUniformLocation(m_particleUpdateProgram, "firstPass");
     glUniform1f(locFirstPass, firstPass);
@@ -168,10 +166,8 @@ void GLWidget::drawParticles() {
     glUniform1i(locResolutionX, resolutionX);
     GLint locResolutionY = glGetUniformLocation(m_particleUpdateProgram, "resolutionY");
     glUniform1i(locResolutionY, resolutionY);
-    GLint locPrevPos = glGetUniformLocation(m_particleUpdateProgram, "prevPos");
-    glUniform1i(locPrevPos, 0);
-    GLint locPrevVel = glGetUniformLocation(m_particleUpdateProgram, "prevVel");
-    glUniform1i(locPrevVel, 1);
+    GLint locPrevChemicals = glGetUniformLocation(m_particleUpdateProgram, "prevChemicals");
+    glUniform1i(locPrevChemicals, 0);
 
     m_quad->draw();
 
@@ -184,13 +180,9 @@ void GLWidget::drawParticles() {
 
     glActiveTexture(GL_TEXTURE0);
     nextFBO->getColorAttachment(0).bind();
-    glActiveTexture(GL_TEXTURE1);
-    nextFBO->getColorAttachment(1).bind();
 
-    GLint locPos = glGetUniformLocation(m_particleDrawProgram, "pos");
-    glUniform1i(locPos, 0);
-    GLint locVel = glGetUniformLocation(m_particleDrawProgram, "vel");
-    glUniform1i(locVel, 1);
+    GLint locChemicals = glGetUniformLocation(m_particleDrawProgram, "chemicals");
+    glUniform1i(locChemicals, 0);
 
     GLint locDrawResolutionX = glGetUniformLocation(m_particleDrawProgram, "resolutionX");
     glUniform1i(locDrawResolutionX, resolutionX);
