@@ -33,7 +33,7 @@ protected:
 
 private:
     void initChemicals(std::shared_ptr<FBO> FBO);
-    void updateChemicals(std::shared_ptr<FBO> prevFBO, std::shared_ptr<FBO> nextFBO, float isFirstPass);
+    void updateChemicals(std::shared_ptr<FBO> prevFBO, std::shared_ptr<FBO> nextFBO);
     void drawChemicals(std::shared_ptr<FBO> FBO);
     void setParticleViewport();
 
@@ -53,7 +53,6 @@ private:
     GLuint m_particlesVAO;
     std::shared_ptr<FBO> m_chemicalsFBO1;
     std::shared_ptr<FBO> m_chemicalsFBO2;
-    bool m_firstPass;
     bool m_evenPass;
     int m_resolutionX;
     int m_resolutionY;

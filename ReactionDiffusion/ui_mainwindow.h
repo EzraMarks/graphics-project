@@ -19,8 +19,10 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QRadioButton>
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QSlider>
+#include <QtWidgets/QDial>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QLineEdit>
 
 QT_BEGIN_NAMESPACE
 
@@ -33,9 +35,45 @@ public:
     QMenu *menuFile;
     QDockWidget *dockWidget;
     QWidget *dockWidgetContents;
-    QGroupBox *parametersGroupBox;
-    QRadioButton *modeBlur;
-    QRadioButton *modeParticles;
+    QGroupBox *groupBox;
+
+    // Pointers to UI elements
+    // dt
+    QLabel *dtLabel;
+    QLineEdit *dtTextbox;
+    QSlider *dtSlider;
+    // diffusionRateA
+    QLabel *diffusionRateALabel;
+    QLineEdit *diffusionRateATextbox;
+    QSlider *diffusionRateASlider;
+    // diffusionRateB
+    QLabel *diffusionRateBLabel;
+    QLineEdit *diffusionRateBTextbox;
+    QSlider *diffusionRateBSlider;
+    // feedRate
+    QLabel *feedRateLabel;
+    QLineEdit *feedRateTextbox;
+    QSlider *feedRateSlider;
+    // killRate
+    QLabel *killRateLabel;
+    QLineEdit *killRateTextbox;
+    QSlider *killRateSlider;
+
+
+    // UI element spacing
+    const int height = 20;
+    const int labelWidth = 140;
+    const int sliderWidth = 120;
+    const int textboxWidth = 40;
+
+    int uiElementIndex = 1;
+    float verticalOffset(bool incrementIndex = true) {
+        int offset = uiElementIndex * (height + 5);
+        if (incrementIndex) {
+            uiElementIndex++;
+        }
+        return offset;
+    }
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -58,17 +96,46 @@ public:
         dockWidget->setMinimumSize(QSize(100, 160));
         dockWidgetContents = new QWidget();
         dockWidgetContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
-        parametersGroupBox = new QGroupBox(dockWidgetContents);
-        parametersGroupBox->setObjectName(QString::fromUtf8("parametersGroupBox"));
-        parametersGroupBox->setGeometry(QRect(10, 10, 160, 334));
-        parametersGroupBox->setMinimumSize(QSize(0, 0));
-        modeBlur = new QRadioButton(parametersGroupBox);
-        modeBlur->setObjectName(QString::fromUtf8("modeBlur"));
-        modeBlur->setGeometry(QRect(0, 30, 140, 22));
-        modeBlur->setChecked(true);
-        modeParticles = new QRadioButton(parametersGroupBox);
-        modeParticles->setObjectName(QString::fromUtf8("modeParticles"));
-        modeParticles->setGeometry(QRect(0, 60, 140, 22));
+        groupBox = new QGroupBox(dockWidgetContents);
+        groupBox->setObjectName(QString::fromUtf8("groupBox"));
+        groupBox->setGeometry(QRect(10, 10, 160, 334));
+        groupBox->setMinimumSize(QSize(0, 0));
+
+        // dt
+        dtLabel  = new QLabel(groupBox);
+        dtLabel->setObjectName(QString::fromUtf8("dtLabel"));
+        dtLabel->setText("Delta t");
+        dtLabel->setGeometry(QRect(0, verticalOffset(), labelWidth, height));
+
+        dtSlider = new QSlider(groupBox);
+        dtSlider->setObjectName(QString::fromUtf8("dtSlider"));
+        dtSlider->setOrientation(Qt::Horizontal);
+        dtSlider->setGeometry(QRect(0, verticalOffset(false), sliderWidth, height));
+
+        dtTextbox = new QLineEdit(groupBox);
+        dtTextbox->setObjectName(QString::fromUtf8("dtTextbox"));
+        dtTextbox->setGeometry(QRect(120, verticalOffset(), textboxWidth, height));
+
+        // diffusionRate
+        diffusionRateALabel  = new QLabel(groupBox);
+        diffusionRateALabel->setObjectName(QString::fromUtf8("diffusionRateALabel"));
+        diffusionRateALabel->setText("Diffusion Rate A");
+        diffusionRateALabel->setGeometry(QRect(0, verticalOffset(), labelWidth, height));
+
+        diffusionRateASlider = new QSlider(groupBox);
+        diffusionRateASlider->setObjectName(QString::fromUtf8("diffusionRateASlider"));
+        diffusionRateASlider->setOrientation(Qt::Horizontal);
+        diffusionRateASlider->setGeometry(QRect(0, verticalOffset(false), sliderWidth, height));
+
+        diffusionRateATextbox = new QLineEdit(groupBox);
+        diffusionRateATextbox->setObjectName(QString::fromUtf8("diffusionRateATextbox"));
+        diffusionRateATextbox->setGeometry(QRect(sliderWidth, verticalOffset(), textboxWidth, height));
+
+
+
+
+
+
         dockWidget->setWidget(dockWidgetContents);
         MainWindow->addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
 
@@ -89,9 +156,7 @@ public:
         actionQuit->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+Q", nullptr));
 #endif // QT_CONFIG(shortcut)
         menuFile->setTitle(QCoreApplication::translate("MainWindow", "File", nullptr));
-        parametersGroupBox->setTitle(QCoreApplication::translate("MainWindow", "FBOs", nullptr));
-        modeBlur->setText(QCoreApplication::translate("MainWindow", "Blur", nullptr));
-        modeParticles->setText(QCoreApplication::translate("MainWindow", "Particles", nullptr));
+        groupBox->setTitle(QCoreApplication::translate("MainWindow", "Settings", nullptr));
     } // retranslateUi
 
 };

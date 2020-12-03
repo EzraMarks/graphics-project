@@ -41,9 +41,10 @@ MainWindow::~MainWindow()
 void MainWindow::dataBind() {
 #define BIND(b) { DataBinding *_b = (b); m_bindings.push_back(_b); assert(connect(_b, SIGNAL(dataChanged()), this, SLOT(settingsChanged()))); }
 
-    BIND(ChoiceBinding::bindRadioButtons(NUM_MODES, settings.mode,
-                                    m_ui->modeBlur,
-                                    m_ui->modeParticles));
+    BIND(FloatBinding::bindSliderAndTextbox(m_ui->dtSlider, m_ui->dtTextbox, settings.dt, 0.0, 2.0));
+
+    BIND(FloatBinding::bindSliderAndTextbox(m_ui->diffusionRateASlider, m_ui->diffusionRateATextbox, settings.diffusionRateA, 0.0, 2.0));
+
 #undef BIND
 }
 

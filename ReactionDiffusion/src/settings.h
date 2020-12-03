@@ -29,13 +29,12 @@ struct Settings {
     // Saves the current settings to disk.
     void saveSettings();
 
-    int mode;          // The currently selected mode.
-
     float dt; // Delta t, the size of the time step for each iteration.
     float diffusionRateA;
     float diffusionRateB;
     float feedRate;
     float killRate;
+    bool isFirstPass;
     QString imagePath;
 };
 

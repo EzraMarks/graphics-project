@@ -1,32 +1,26 @@
 #version 330 core
 
-uniform float firstPass;
 uniform sampler2D prevChemicals;
 uniform int resolutionX;
 uniform int resolutionY;
+
+uniform float dt;
+uniform float diffusionRateA;
+uniform float diffusionRateB;
+uniform float feedRate;
+uniform float killRate;
+
+// TODO remove
+//const float diffusionRateA = 1.0;
+//const float diffusionRateB = 0.5;
+//const float feedRate = 0.055;
+//const float killRate = 0.062;
 
 // output from quad.vert
 in vec2 uv;
 
 // TODO [Task 15] setup the output locations
 layout(location = 0) out vec4 chemicals;
-
-const float dt = 1.0;
-const float diffusionRateA = 1.0;
-const float diffusionRateB = 0.5;
-const float feedRate = 0.055;
-const float killRate = 0.062;
-
-// A helpful procedural "random" number generator
-float hash(float n) { return fract(sin(n)*753.5453123); }
-
-vec4 initChemicals() {
-    if (uv.x > 0.3 && uv.x < 0.7 && uv.y > 0.3 && uv.y < 0.7) {
-        return vec4(0, 1, 0, 0);
-    } else {
-        return vec4(1, 0, 0, 0);
-    }
-}
 
 vec2 indexToUV(int x, int y) {
     return vec2(float(x) / float(resolutionX), float(y) / float(resolutionY));
@@ -47,8 +41,6 @@ vec4 laplace() {
     sum += texture(prevChemicals, indexToUV(x+1, y+1)) * 0.05;
     sum += texture(prevChemicals, indexToUV(x-1, y+1)) * 0.05;
 
-
-
     return sum;
 }
 
@@ -67,14 +59,9 @@ vec4 updateChemicals() {
     return newChemicalsUV;
 }
 
-
 void main() {
     int indexX = int(uv.x * resolutionX);
     int indexY = int(uv.y * resolutionY);
 
-    if (firstPass > 0.5) {
-        chemicals = initChemicals();
-    } else {
-        chemicals = updateChemicals();
-    }
+    chemicals = updateChemicals();
 }

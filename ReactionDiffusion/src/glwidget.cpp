@@ -20,7 +20,7 @@ GLWidget::GLWidget(QGLFormat format, QWidget *parent)
       m_phongProgram(0), m_textureProgram(0),
       m_quad(nullptr),
       m_chemicalsFBO1(nullptr), m_chemicalsFBO2(nullptr),
-      m_firstPass(true), m_evenPass(true), m_resolutionX(512), m_resolutionY(512),
+      m_evenPass(true), m_resolutionX(512), m_resolutionY(512),
       m_angleX(-0.5f), m_angleY(0.5f), m_zoom(4.f)
 {
 }
@@ -76,26 +76,18 @@ void GLWidget::initializeGL() {
 
 void GLWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
-    switch (settings.mode) {
-        case MODE_BLUR:
-            break;
-        case MODE_PARTICLES:
-            auto prevFBO = m_evenPass ? m_chemicalsFBO1 : m_chemicalsFBO2;
-            auto nextFBO = m_evenPass ? m_chemicalsFBO2 : m_chemicalsFBO1;
-            m_evenPass = !m_evenPass;
-            float isFirstPass = m_firstPass ? 1.0f : 0.0f;
-            m_firstPass = false;
+    auto prevFBO = m_evenPass ? m_chemicalsFBO1 : m_chemicalsFBO2;
+    auto nextFBO = m_evenPass ? m_chemicalsFBO2 : m_chemicalsFBO1;
+    m_evenPass = !m_evenPass;
 
-            if (isFirstPass) {
-                initChemicals(prevFBO);
-                isFirstPass = 0.0f;
-            }
-
-            updateChemicals(prevFBO, nextFBO, isFirstPass);
-            drawChemicals(nextFBO);
-            update();
-            break;
+    if (settings.isFirstPass) {
+        initChemicals(prevFBO);
+        settings.isFirstPass = false;
     }
+
+    updateChemicals(prevFBO, nextFBO);
+    drawChemicals(nextFBO);
+    update();
 }
 
 void GLWidget::initChemicals(std::shared_ptr<FBO> FBO) {
@@ -117,15 +109,14 @@ void GLWidget::initChemicals(std::shared_ptr<FBO> FBO) {
     FBO->unbind();
 }
 
-void GLWidget::updateChemicals(std::shared_ptr<FBO> prevFBO, std::shared_ptr<FBO> nextFBO, float isFirstPass) {
+void GLWidget::updateChemicals(std::shared_ptr<FBO> prevFBO, std::shared_ptr<FBO> nextFBO) {
     // TODO [Task 14] Move the particles from prevFBO to nextFBO while updating them
     nextFBO->bind();
     glUseProgram(m_chemicalUpdateProgram);
     glActiveTexture(GL_TEXTURE0);
     prevFBO->getColorAttachment(0).bind(); // TODO: should I unbind after I'm done here?
 
-    GLint locFirstPass = glGetUniformLocation(m_chemicalUpdateProgram, "firstPass");
-    glUniform1f(locFirstPass, isFirstPass);
+    // Sends uniforms containing the previous state of the simulation
     GLint locResolutionX = glGetUniformLocation(m_chemicalUpdateProgram, "resolutionX");
     glUniform1i(locResolutionX, m_resolutionX);
     GLint locResolutionY = glGetUniformLocation(m_chemicalUpdateProgram, "resolutionY");
@@ -133,45 +124,35 @@ void GLWidget::updateChemicals(std::shared_ptr<FBO> prevFBO, std::shared_ptr<FBO
     GLint locPrevChemicals = glGetUniformLocation(m_chemicalUpdateProgram, "prevChemicals");
     glUniform1i(locPrevChemicals, 0);
 
+    // Sends uniforms containing the reaction-diffusion parameters
+    GLint locDt = glGetUniformLocation(m_chemicalUpdateProgram, "dt");
+    glUniform1f(locDt, settings.dt);
+    GLint locDiffusionRateA = glGetUniformLocation(m_chemicalUpdateProgram, "diffusionRateA");
+    glUniform1f(locDiffusionRateA, settings.diffusionRateA);
+    GLint locDiffusionRateB = glGetUniformLocation(m_chemicalUpdateProgram, "diffusionRateB");
+    glUniform1f(locDiffusionRateB, settings.diffusionRateB);
+    GLint locFeedRate = glGetUniformLocation(m_chemicalUpdateProgram, "feedRate");
+    glUniform1f(locFeedRate, settings.feedRate);
+    GLint locKillRate = glGetUniformLocation(m_chemicalUpdateProgram, "killRate");
+    glUniform1f(locKillRate, settings.killRate);
+
     m_quad->draw();
     nextFBO->unbind();
 }
 
-//void GLWidget::drawChemicals(std::shared_ptr<FBO> FBO) {
-//    glClear(GL_COLOR_BUFFER_BIT);
-//    glClear(GL_DEPTH_BUFFER_BIT);
-//    glUseProgram(m_chemicalDrawProgram);
-//    setParticleViewport();
-
-//    glActiveTexture(GL_TEXTURE0);
-//    FBO->getColorAttachment(0).bind();
-
-//    GLint locChemicals = glGetUniformLocation(m_chemicalDrawProgram, "chemicals");
-//    glUniform1i(locChemicals, 0);
-
-//    GLint locDrawResolutionX = glGetUniformLocation(m_chemicalDrawProgram, "resolutionX");
-//    glUniform1i(locDrawResolutionX, m_resolutionX);
-//    GLint locDrawResolutionY = glGetUniformLocation(m_chemicalDrawProgram, "resolutionY");
-//    glUniform1i(locDrawResolutionY, m_resolutionY);
-
-//    glBindVertexArray(m_particlesVAO);
-//    glDrawArrays(GL_TRIANGLES, 0, 3 * m_resolutionX * m_resolutionY);
-//    glBindVertexArray(0);
-//}
-
 void GLWidget::drawChemicals(std::shared_ptr<FBO> FBO) {
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glUseProgram(m_chemicalDrawProgram);
-        setParticleViewport();
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glUseProgram(m_chemicalDrawProgram);
+    setParticleViewport();
 
-        glActiveTexture(GL_TEXTURE0);
-        FBO->getColorAttachment(0).bind();
+    glActiveTexture(GL_TEXTURE0);
+    FBO->getColorAttachment(0).bind();
 
-        GLint locTex = glGetUniformLocation(m_chemicalDrawProgram, "tex");
-        glUniform1i(locTex, 0);
+    GLint locTex = glGetUniformLocation(m_chemicalDrawProgram, "tex");
+    glUniform1i(locTex, 0);
 
-        m_quad->draw();
+    m_quad->draw();
 }
 
 // This is called at the beginning of the program between initializeGL and
