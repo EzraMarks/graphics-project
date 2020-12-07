@@ -23,6 +23,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,6 +59,9 @@ public:
     QLabel *killRateLabel;
     QLineEdit *killRateTextbox;
     QSlider *killRateSlider;
+    // resetSimulation
+    QPushButton *resetSimulation;
+
 
 
     // UI element spacing
@@ -117,7 +121,7 @@ public:
         dtTextbox->setGeometry(QRect(120, verticalOffset(), textboxWidth, height));
 
         // diffusionRate
-        diffusionRateALabel  = new QLabel(groupBox);
+        diffusionRateALabel = new QLabel(groupBox);
         diffusionRateALabel->setObjectName(QString::fromUtf8("diffusionRateALabel"));
         diffusionRateALabel->setText("Diffusion Rate A");
         diffusionRateALabel->setGeometry(QRect(0, verticalOffset(), labelWidth, height));
@@ -131,6 +135,12 @@ public:
         diffusionRateATextbox->setObjectName(QString::fromUtf8("diffusionRateATextbox"));
         diffusionRateATextbox->setGeometry(QRect(sliderWidth, verticalOffset(), textboxWidth, height));
 
+
+        // resetSimulation
+        resetSimulation = new QPushButton(groupBox);
+        resetSimulation->setObjectName(QString::fromUtf8("resetSimulation"));
+        resetSimulation->setGeometry(QRect(0, verticalOffset(), labelWidth, height));
+        QObject::connect(resetSimulation, SIGNAL(clicked()), MainWindow, SLOT(resetSimulation()));
 
 
 

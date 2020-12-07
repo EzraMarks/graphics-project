@@ -91,7 +91,7 @@ void GLWidget::paintGL() {
 }
 
 void GLWidget::initChemicals(std::shared_ptr<FBO> FBO) {
-    QString filename = QString::fromStdString("C:/Users/ezrab/Downloads/ezra-marks-profile-photo.jpg");
+    QString filename = QString::fromStdString("C:/Users/ezrab/Downloads/wip.jpg");
     QImage img = QImage(filename);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -114,7 +114,7 @@ void GLWidget::updateChemicals(std::shared_ptr<FBO> prevFBO, std::shared_ptr<FBO
     nextFBO->bind();
     glUseProgram(m_chemicalUpdateProgram);
     glActiveTexture(GL_TEXTURE0);
-    prevFBO->getColorAttachment(0).bind(); // TODO: should I unbind after I'm done here?
+    prevFBO->getColorAttachment(0).bind();
 
     // Sends uniforms containing the previous state of the simulation
     GLint locResolutionX = glGetUniformLocation(m_chemicalUpdateProgram, "resolutionX");
@@ -137,6 +137,7 @@ void GLWidget::updateChemicals(std::shared_ptr<FBO> prevFBO, std::shared_ptr<FBO
     glUniform1f(locKillRate, settings.killRate);
 
     m_quad->draw();
+    prevFBO->getColorAttachment(0).unbind();
     nextFBO->unbind();
 }
 
@@ -147,12 +148,13 @@ void GLWidget::drawChemicals(std::shared_ptr<FBO> FBO) {
     setParticleViewport();
 
     glActiveTexture(GL_TEXTURE0);
-    FBO->getColorAttachment(0).bind();
+    FBO->getColorAttachment(0).bind(); // TODO: unbind?
 
     GLint locTex = glGetUniformLocation(m_chemicalDrawProgram, "tex");
     glUniform1i(locTex, 0);
 
     m_quad->draw();
+    FBO->getColorAttachment(0).unbind();
 }
 
 // This is called at the beginning of the program between initializeGL and

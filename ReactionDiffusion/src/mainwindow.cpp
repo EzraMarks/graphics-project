@@ -61,3 +61,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
     QMainWindow::closeEvent(event);
 }
+
+void MainWindow::resetSimulation() {
+    settings.isFirstPass = true;
+}

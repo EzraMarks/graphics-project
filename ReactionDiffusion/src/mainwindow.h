@@ -26,6 +26,9 @@ protected:
     // Overridden from QWidget
     void closeEvent(QCloseEvent *event);
 
+private slots:
+    void resetSimulation();
+
 private:
     Ui::MainWindow *m_ui;
     QList<DataBinding *> m_bindings;
