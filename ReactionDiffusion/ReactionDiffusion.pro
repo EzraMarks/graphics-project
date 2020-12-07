@@ -88,5 +88,6 @@ RESOURCES += \
     shaders/shaders.qrc
 
 DISTFILES += \
+    shaders/chemicals_draw.frag \
     shaders/chemicals_init.frag \
     shaders/chemicals_update.frag

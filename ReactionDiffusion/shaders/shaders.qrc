@@ -8,7 +8,9 @@
         <file>texture.frag</file>
         <file>particles_draw.frag</file>
         <file>particles_draw.vert</file>
-        <file>chemicals_update.frag</file>
         <file>chemicals_init.frag</file>
+        <file>chemicals_update.frag</file>
+        <file>chemicals_draw.frag</file>
+        
     </qresource>
 </RCC>

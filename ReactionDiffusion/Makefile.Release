@@ -100,7 +100,8 @@ OBJECTS       = release/mainwindow.o \
 		release/moc_glwidget.o \
 		release/moc_databinding.o
 
-DIST          = shaders/chemicals_init.frag \
+DIST          = shaders/chemicals_draw.frag \
+		shaders/chemicals_init.frag \
 		shaders/chemicals_update.frag src\mainwindow.h \
 		src\glwidget.h \
 		src\openglshape.h \
@@ -196,6 +197,7 @@ release/qrc_shaders.cpp: shaders/shaders.qrc \
 		shaders/phong.vert \
 		shaders/horizontalBlur.frag \
 		shaders/texture.frag \
+		shaders/chemicals_draw.frag \
 		shaders/particles_draw.frag
 	C:\Qt\Qt5.14.2\5.14.2\mingw73_64\bin\rcc.exe -name shaders shaders\shaders.qrc -o release\qrc_shaders.cpp
 
@@ -1055,6 +1057,19 @@ release/mainwindow.o: src/mainwindow.cpp src/mainwindow.h \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qradiobutton.h \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qabstractbutton.h \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QWidget \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QDial \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qdial.h \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qabstractslider.h \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QLabel \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qlabel.h \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QSlider \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qslider.h \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QLineEdit \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qlineedit.h \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtGui/qtextcursor.h \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtGui/qtextformat.h \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QPushButton \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qpushbutton.h \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtCore/QSettings \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtCore/qsettings.h \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QGridLayout \
@@ -1064,21 +1079,17 @@ release/mainwindow.o: src/mainwindow.cpp src/mainwindow.h \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qboxlayout.h \
 		src/databinding.h \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtCore/QObject \
-		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QSlider \
-		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qslider.h \
-		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qabstractslider.h \
-		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QLineEdit \
-		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qlineedit.h \
-		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtGui/qtextcursor.h \
-		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtGui/qtextformat.h \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QCheckBox \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qcheckbox.h \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QButtonGroup \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qbuttongroup.h \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QTabWidget \
-		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QDial \
-		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qdial.h \
-		src/settings.h
+		src/settings.h \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QFileDialog \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qfiledialog.h \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtCore/qdir.h \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtCore/qfileinfo.h \
+		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/qdialog.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mainwindow.o src\mainwindow.cpp
 
 release/main.o: src/main.cpp C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtWidgets/QApplication \
@@ -1689,7 +1700,7 @@ release/GLDebug.o: src/gl/GLDebug.cpp src/gl/GLDebug.h \
 		../glew-1.10.0/include/GL/glew.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\GLDebug.o src\gl\GLDebug.cpp
 
-release/databinding.o: src/databinding.cpp src/databinding.h \
+release/databinding.o: src/databinding.cpp src/Databinding.h \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtCore/QObject \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtCore/qobject.h \
 		C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtCore/qobjectdefs.h \

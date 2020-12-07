@@ -20,7 +20,7 @@ GLWidget::GLWidget(QGLFormat format, QWidget *parent)
       m_phongProgram(0), m_textureProgram(0),
       m_quad(nullptr),
       m_chemicalsFBO1(nullptr), m_chemicalsFBO2(nullptr),
-      m_evenPass(true), m_resolutionX(512), m_resolutionY(512),
+      m_evenPass(true), m_resolutionX(1024), m_resolutionY(1024),
       m_angleX(-0.5f), m_angleY(0.5f), m_zoom(4.f)
 {
 }
@@ -47,7 +47,7 @@ void GLWidget::initializeGL() {
     m_chemicalUpdateProgram = ResourceLoader::createShaderProgram(
                 ":/shaders/quad.vert", ":/shaders/chemicals_update.frag");
     m_chemicalDrawProgram = ResourceLoader::createShaderProgram(
-                ":/shaders/quad.vert", ":/shaders/texture.frag");
+                ":/shaders/quad.vert", ":/shaders/chemicals_draw.frag");
 
     // TODO: [Task 6] Fill in the positions and UV coordinates to draw a fullscreen quad
     // We've already set the vertex attributes for you, so be sure to follow those specifications
@@ -131,7 +131,7 @@ void GLWidget::updateChemicals(std::shared_ptr<FBO> prevFBO, std::shared_ptr<FBO
     GLint locDiffusionRateB = glGetUniformLocation(m_chemicalUpdateProgram, "diffusionRateB");
     glUniform1f(locDiffusionRateB, settings.diffusionRateB);
     GLint locFeedRate = glGetUniformLocation(m_chemicalUpdateProgram, "feedRate");
-    glUniform1f(locFeedRate, settings.feedRate / 10.f);
+    glUniform1f(locFeedRate, settings.feedRate / 10.f); // TODO: this is shitty style
     GLint locKillRate = glGetUniformLocation(m_chemicalUpdateProgram, "killRate");
     glUniform1f(locKillRate, settings.killRate / 10.f);
 
@@ -151,6 +151,10 @@ void GLWidget::drawChemicals(std::shared_ptr<FBO> FBO) {
 
     GLint locTex = glGetUniformLocation(m_chemicalDrawProgram, "tex");
     glUniform1i(locTex, 0);
+    GLint locResolutionX = glGetUniformLocation(m_chemicalDrawProgram, "resolutionX");
+    glUniform1i(locResolutionX, m_resolutionX);
+    GLint locResolutionY = glGetUniformLocation(m_chemicalDrawProgram, "resolutionY");
+    glUniform1i(locResolutionY, m_resolutionY);
 
     m_quad->draw();
     FBO->getColorAttachment(0).unbind();
