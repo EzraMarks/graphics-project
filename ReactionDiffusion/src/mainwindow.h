@@ -21,6 +21,7 @@ public:
 public slots:
     // Used internally to keep data bindings and settings in sync.
     void settingsChanged();
+    void fileOpen();
 
 protected:
     // Overridden from QWidget

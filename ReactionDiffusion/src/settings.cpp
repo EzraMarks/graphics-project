@@ -21,14 +21,6 @@ void Settings::loadSettingsOrDefaults() {
     isFirstPass = true;
 }
 
-void Settings::resetSettings() {
-    dt = defaultDt;
-    diffusionRateA = defaultDiffusionRateA;
-    diffusionRateB = defaultDiffusionRateB;
-    feedRate = defaultFeedRate;
-    killRate = defaultKillRate;
-}
-
 void Settings::saveSettings() {
     QSettings s("CS123", "ReactionDiffusion");
     s.setValue("dt", dt);

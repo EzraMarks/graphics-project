@@ -91,8 +91,7 @@ void GLWidget::paintGL() {
 }
 
 void GLWidget::initChemicals(std::shared_ptr<FBO> FBO) {
-    QString filename = QString::fromStdString("C:/Users/ezrab/Downloads/wip.jpg");
-    QImage img = QImage(filename);
+    QImage img = QImage(settings.imagePath); // TODO: Add error checking
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

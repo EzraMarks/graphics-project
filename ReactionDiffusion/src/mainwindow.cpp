@@ -6,6 +6,7 @@
 #include <iostream>
 #include "databinding.h"
 #include "settings.h"
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -69,5 +70,17 @@ void MainWindow::resetSimulation() {
 }
 
 void MainWindow::resetParameters() {
-    settings.resetSettings();
+    m_ui->dtTextbox->setText(QString::number(settings.defaultDt));
+    m_ui->diffusionRateATextbox->setText(QString::number(settings.defaultDiffusionRateA));
+    m_ui->diffusionRateBTextbox->setText(QString::number(settings.defaultDiffusionRateB));
+    m_ui->feedRateTextbox->setText(QString::number(settings.defaultFeedRate));
+    m_ui->killRateTextbox->setText(QString::number(settings.defaultKillRate));
+}
+
+void MainWindow::fileOpen() {
+    QString file = QFileDialog::getOpenFileName(this, QString(), "");
+    if (!file.isNull()) {
+        settings.imagePath = file;
+        settings.isFirstPass = true;
+    }
 }

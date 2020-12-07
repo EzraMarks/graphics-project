@@ -26,9 +26,6 @@ struct Settings {
     // Loads settings from disk, or fills in default values if no saved settings exist.
     void loadSettingsOrDefaults();
 
-    // Resets settings to default values
-    void resetSettings();
-
     // Saves the current settings to disk.
     void saveSettings();
 
