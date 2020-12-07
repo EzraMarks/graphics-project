@@ -132,9 +132,9 @@ void GLWidget::updateChemicals(std::shared_ptr<FBO> prevFBO, std::shared_ptr<FBO
     GLint locDiffusionRateB = glGetUniformLocation(m_chemicalUpdateProgram, "diffusionRateB");
     glUniform1f(locDiffusionRateB, settings.diffusionRateB);
     GLint locFeedRate = glGetUniformLocation(m_chemicalUpdateProgram, "feedRate");
-    glUniform1f(locFeedRate, settings.feedRate);
+    glUniform1f(locFeedRate, settings.feedRate / 10.f);
     GLint locKillRate = glGetUniformLocation(m_chemicalUpdateProgram, "killRate");
-    glUniform1f(locKillRate, settings.killRate);
+    glUniform1f(locKillRate, settings.killRate / 10.f);
 
     m_quad->draw();
     prevFBO->getColorAttachment(0).unbind();

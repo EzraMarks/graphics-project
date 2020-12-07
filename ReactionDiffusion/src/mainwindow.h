@@ -28,6 +28,7 @@ protected:
 
 private slots:
     void resetSimulation();
+    void resetParameters();
 
 private:
     Ui::MainWindow *m_ui;

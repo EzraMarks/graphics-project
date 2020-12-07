@@ -12,20 +12,21 @@ Settings settings;
 void Settings::loadSettingsOrDefaults() {
     // Set the default values below
     QSettings s("CS123", "ReactionDiffusion");
-    // TODO uncomment
-//    dt = s.value("dt", 1.0).toFloat();
-//    diffusionRateA = s.value("diffusionRateA", 1.0).toFloat();
-//    diffusionRateB = s.value("diffusionRateB", 0.5).toFloat();
-//    feedRate = s.value("feedRate", 0.055).toFloat();
-//    killRate = s.value("killRate", 0.062).toFloat();
-//    imagePath = s.value("imagePath", QString()).toString();
-
-    dt = 1.0;
-    diffusionRateA = 1.0;
-    diffusionRateB = 0.5;
-    feedRate = 0.055;
-    killRate = 0.062;
+    dt = s.value("dt", defaultDt).toFloat();
+    diffusionRateA = s.value("diffusionRateA", defaultDiffusionRateA).toFloat();
+    diffusionRateB = s.value("diffusionRateB", defaultDiffusionRateB).toFloat();
+    feedRate = s.value("feedRate", defaultFeedRate).toFloat();
+    killRate = s.value("killRate", defaultKillRate).toFloat();
+    imagePath = s.value("imagePath", QString()).toString();
     isFirstPass = true;
+}
+
+void Settings::resetSettings() {
+    dt = defaultDt;
+    diffusionRateA = defaultDiffusionRateA;
+    diffusionRateB = defaultDiffusionRateB;
+    feedRate = defaultFeedRate;
+    killRate = defaultKillRate;
 }
 
 void Settings::saveSettings() {

@@ -39,39 +39,48 @@ public:
     QGroupBox *groupBox;
 
     // Pointers to UI elements
+
     // dt
     QLabel *dtLabel;
     QLineEdit *dtTextbox;
     QSlider *dtSlider;
+
     // diffusionRateA
     QLabel *diffusionRateALabel;
     QLineEdit *diffusionRateATextbox;
     QSlider *diffusionRateASlider;
+
     // diffusionRateB
     QLabel *diffusionRateBLabel;
     QLineEdit *diffusionRateBTextbox;
     QSlider *diffusionRateBSlider;
+
     // feedRate
     QLabel *feedRateLabel;
     QLineEdit *feedRateTextbox;
     QSlider *feedRateSlider;
+
     // killRate
     QLabel *killRateLabel;
     QLineEdit *killRateTextbox;
     QSlider *killRateSlider;
-    // resetSimulation
-    QPushButton *resetSimulation;
 
+    // resetSimulation
+    QPushButton *resetSimulationButton;
+
+    // resetParameters
+    QPushButton *resetParametersButton;
 
 
     // UI element spacing
+    const int left = 10;
     const int height = 20;
-    const int labelWidth = 140;
-    const int sliderWidth = 120;
-    const int textboxWidth = 40;
+    const int width = 100;
+    const int textBoxLeft = left + width + left;
+    const int textboxWidth = 30;
 
     int uiElementIndex = 1;
-    float verticalOffset(bool incrementIndex = true) {
+    float top(bool incrementIndex = true) {
         int offset = uiElementIndex * (height + 5);
         if (incrementIndex) {
             uiElementIndex++;
@@ -102,48 +111,98 @@ public:
         dockWidgetContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
         groupBox = new QGroupBox(dockWidgetContents);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        groupBox->setGeometry(QRect(10, 10, 160, 334));
+        groupBox->setGeometry(QRect(10, 10, 160, 360));
         groupBox->setMinimumSize(QSize(0, 0));
 
         // dt
         dtLabel  = new QLabel(groupBox);
         dtLabel->setObjectName(QString::fromUtf8("dtLabel"));
         dtLabel->setText("Delta t");
-        dtLabel->setGeometry(QRect(0, verticalOffset(), labelWidth, height));
+        dtLabel->setGeometry(QRect(left, top(), width, height));
 
         dtSlider = new QSlider(groupBox);
         dtSlider->setObjectName(QString::fromUtf8("dtSlider"));
         dtSlider->setOrientation(Qt::Horizontal);
-        dtSlider->setGeometry(QRect(0, verticalOffset(false), sliderWidth, height));
+        dtSlider->setGeometry(QRect(left, top(false), width, height));
 
         dtTextbox = new QLineEdit(groupBox);
         dtTextbox->setObjectName(QString::fromUtf8("dtTextbox"));
-        dtTextbox->setGeometry(QRect(120, verticalOffset(), textboxWidth, height));
+        dtTextbox->setGeometry(QRect(textBoxLeft, top(), textboxWidth, height));
 
-        // diffusionRate
+        // diffusionRateA
         diffusionRateALabel = new QLabel(groupBox);
         diffusionRateALabel->setObjectName(QString::fromUtf8("diffusionRateALabel"));
         diffusionRateALabel->setText("Diffusion Rate A");
-        diffusionRateALabel->setGeometry(QRect(0, verticalOffset(), labelWidth, height));
+        diffusionRateALabel->setGeometry(QRect(left, top(), width, height));
 
         diffusionRateASlider = new QSlider(groupBox);
         diffusionRateASlider->setObjectName(QString::fromUtf8("diffusionRateASlider"));
         diffusionRateASlider->setOrientation(Qt::Horizontal);
-        diffusionRateASlider->setGeometry(QRect(0, verticalOffset(false), sliderWidth, height));
+        diffusionRateASlider->setGeometry(QRect(left, top(false), width, height));
 
         diffusionRateATextbox = new QLineEdit(groupBox);
         diffusionRateATextbox->setObjectName(QString::fromUtf8("diffusionRateATextbox"));
-        diffusionRateATextbox->setGeometry(QRect(sliderWidth, verticalOffset(), textboxWidth, height));
+        diffusionRateATextbox->setGeometry(QRect(textBoxLeft, top(), textboxWidth, height));
 
+        // diffusionRateB
+        diffusionRateBLabel = new QLabel(groupBox);
+        diffusionRateBLabel->setObjectName(QString::fromUtf8("diffusionRateBLabel"));
+        diffusionRateBLabel->setText("Diffusion Rate B");
+        diffusionRateBLabel->setGeometry(QRect(left, top(), width, height));
+
+        diffusionRateBSlider = new QSlider(groupBox);
+        diffusionRateBSlider->setObjectName(QString::fromUtf8("diffusionRateBSlider"));
+        diffusionRateBSlider->setOrientation(Qt::Horizontal);
+        diffusionRateBSlider->setGeometry(QRect(left, top(false), width, height));
+
+        diffusionRateBTextbox = new QLineEdit(groupBox);
+        diffusionRateBTextbox->setObjectName(QString::fromUtf8("diffusionRateBTextbox"));
+        diffusionRateBTextbox->setGeometry(QRect(textBoxLeft, top(), textboxWidth, height));
+
+        // feedRate
+        feedRateLabel = new QLabel(groupBox);
+        feedRateLabel->setObjectName(QString::fromUtf8("feedRateLabel"));
+        feedRateLabel->setText("Feed Rate");
+        feedRateLabel->setGeometry(QRect(left, top(), width, height));
+
+        feedRateSlider = new QSlider(groupBox);
+        feedRateSlider->setObjectName(QString::fromUtf8("feedRateSlider"));
+        feedRateSlider->setOrientation(Qt::Horizontal);
+        feedRateSlider->setGeometry(QRect(left, top(false), width, height));
+
+        feedRateTextbox = new QLineEdit(groupBox);
+        feedRateTextbox->setObjectName(QString::fromUtf8("feedRateTextbox"));
+        feedRateTextbox->setGeometry(QRect(textBoxLeft, top(), textboxWidth, height));
+
+        // killRate
+        killRateLabel = new QLabel(groupBox);
+        killRateLabel->setObjectName(QString::fromUtf8("killRateLabel"));
+        killRateLabel->setText("Kill Rate");
+        killRateLabel->setGeometry(QRect(left, top(), width, height));
+
+        killRateSlider = new QSlider(groupBox);
+        killRateSlider->setObjectName(QString::fromUtf8("killRateSlider"));
+        killRateSlider->setOrientation(Qt::Horizontal);
+        killRateSlider->setGeometry(QRect(left, top(false), width, height));
+
+        killRateTextbox = new QLineEdit(groupBox);
+        killRateTextbox->setObjectName(QString::fromUtf8("killRateTextbox"));
+        killRateTextbox->setGeometry(QRect(textBoxLeft, top(), textboxWidth, height));
 
         // resetSimulation
-        resetSimulation = new QPushButton(groupBox);
-        resetSimulation->setObjectName(QString::fromUtf8("resetSimulation"));
-        resetSimulation->setGeometry(QRect(0, verticalOffset(), labelWidth, height));
-        QObject::connect(resetSimulation, SIGNAL(clicked()), MainWindow, SLOT(resetSimulation()));
+        top(); // creates additional vertical space
+        resetSimulationButton = new QPushButton(groupBox);
+        resetSimulationButton->setObjectName(QString::fromUtf8("resetSimulation"));
+        resetSimulationButton->setText("Reset Simulation");
+        resetSimulationButton->setGeometry(QRect(left, top(), width, height));
+        QObject::connect(resetSimulationButton, SIGNAL(clicked()), MainWindow, SLOT(resetSimulation()));
 
-
-
+        // resetParameters
+        resetParametersButton = new QPushButton(groupBox);
+        resetParametersButton->setObjectName(QString::fromUtf8("resetParameters"));
+        resetParametersButton->setText("Reset Parameters");
+        resetParametersButton->setGeometry(QRect(left, top(), width, height));
+        QObject::connect(resetParametersButton, SIGNAL(clicked()), MainWindow, SLOT(resetParameters()));
 
 
         dockWidget->setWidget(dockWidgetContents);
@@ -160,7 +219,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Lab 7 - Framebuffers", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Reaction Diffusion - Ezra Marks", nullptr));
         actionQuit->setText(QCoreApplication::translate("MainWindow", "Quit", nullptr));
 #if QT_CONFIG(shortcut)
         actionQuit->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+Q", nullptr));

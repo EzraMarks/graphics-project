@@ -26,8 +26,21 @@ struct Settings {
     // Loads settings from disk, or fills in default values if no saved settings exist.
     void loadSettingsOrDefaults();
 
+    // Resets settings to default values
+    void resetSettings();
+
     // Saves the current settings to disk.
     void saveSettings();
+
+    // Default simulation parameters
+    const float defaultDt = 1.0;
+    const float defaultDiffusionRateA = 1.0;
+    const float defaultDiffusionRateB = 0.5;
+    const float defaultFeedRate = 0.55;
+    const float defaultKillRate = 0.62;
+
+
+    // Current simulation parameters
 
     float dt; // Delta t, the size of the time step for each iteration.
     float diffusionRateA;

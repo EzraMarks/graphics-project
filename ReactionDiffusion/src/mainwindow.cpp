@@ -42,8 +42,10 @@ void MainWindow::dataBind() {
 #define BIND(b) { DataBinding *_b = (b); m_bindings.push_back(_b); assert(connect(_b, SIGNAL(dataChanged()), this, SLOT(settingsChanged()))); }
 
     BIND(FloatBinding::bindSliderAndTextbox(m_ui->dtSlider, m_ui->dtTextbox, settings.dt, 0.0, 2.0));
-
     BIND(FloatBinding::bindSliderAndTextbox(m_ui->diffusionRateASlider, m_ui->diffusionRateATextbox, settings.diffusionRateA, 0.0, 2.0));
+    BIND(FloatBinding::bindSliderAndTextbox(m_ui->diffusionRateBSlider, m_ui->diffusionRateBTextbox, settings.diffusionRateB, 0.0, 2.0));
+    BIND(FloatBinding::bindSliderAndTextbox(m_ui->feedRateSlider, m_ui->feedRateTextbox, settings.feedRate, 0.0, 2.0));
+    BIND(FloatBinding::bindSliderAndTextbox(m_ui->killRateSlider, m_ui->killRateTextbox, settings.killRate, 0.0, 2.0));
 
 #undef BIND
 }
@@ -64,4 +66,8 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 void MainWindow::resetSimulation() {
     settings.isFirstPass = true;
+}
+
+void MainWindow::resetParameters() {
+    settings.resetSettings();
 }
