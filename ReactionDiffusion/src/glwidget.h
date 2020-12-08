@@ -27,9 +27,6 @@ protected:
     void initializeGL();
     void paintGL();
     void resizeGL(int w, int h);
-    void mousePressEvent(QMouseEvent *e);
-    void mouseMoveEvent(QMouseEvent *e);
-    void wheelEvent(QWheelEvent *e);
 
 private:
     void initChemicals(std::shared_ptr<FBO> FBO);
@@ -37,31 +34,20 @@ private:
     void drawChemicals(std::shared_ptr<FBO> FBO);
     void setParticleViewport();
 
-    void rebuildMatrices();
-
     int m_width;
     int m_height;
 
-    GLuint m_phongProgram;
-    GLuint m_textureProgram;
     GLuint m_chemicalInitProgram;
     GLuint m_chemicalUpdateProgram;
     GLuint m_chemicalDrawProgram;
 
     std::unique_ptr<OpenGLShape> m_quad;
 
-    GLuint m_particlesVAO;
     std::shared_ptr<FBO> m_chemicalsFBO1;
     std::shared_ptr<FBO> m_chemicalsFBO2;
     bool m_evenPass;
     int m_resolutionX;
     int m_resolutionY;
-
-    glm::mat4 m_view, m_projection;
-
-    /** For mouse interaction. */
-    float m_angleX, m_angleY, m_zoom;
-    QPoint m_prevMousePos;
 };
 
 #endif // GLWIDGET_H

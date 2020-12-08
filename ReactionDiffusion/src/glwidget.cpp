@@ -16,17 +16,14 @@ using namespace CS123::GL;
 GLWidget::GLWidget(QGLFormat format, QWidget *parent)
     : QGLWidget(format, parent),
       m_width(width()), m_height(height()),
-      m_phongProgram(0), m_textureProgram(0),
       m_quad(nullptr),
       m_chemicalsFBO1(nullptr), m_chemicalsFBO2(nullptr),
-      m_evenPass(true), m_resolutionX(1024), m_resolutionY(1024),
-      m_angleX(-0.5f), m_angleY(0.5f), m_zoom(4.f)
+      m_evenPass(true), m_resolutionX(1024), m_resolutionY(1024)
 {
 }
 
 GLWidget::~GLWidget()
 {
-    glDeleteVertexArrays(1, &m_particlesVAO);
 }
 
 void GLWidget::initializeGL() {
@@ -37,10 +34,6 @@ void GLWidget::initializeGL() {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     // Create shader programs.
-    m_phongProgram = ResourceLoader::createShaderProgram(
-                ":/shaders/phong.vert", ":/shaders/phong.frag");
-    m_textureProgram = ResourceLoader::createShaderProgram(
-                ":/shaders/quad.vert", ":/shaders/texture.frag");
     m_chemicalInitProgram = ResourceLoader::createShaderProgram(
                 ":/shaders/quad.vert", ":/shaders/chemicals_init.frag");
     m_chemicalUpdateProgram = ResourceLoader::createShaderProgram(
@@ -65,9 +58,6 @@ void GLWidget::initializeGL() {
     m_quad->setAttribute(ShaderAttrib::TEXCOORD0, 2, 3*sizeof(GLfloat), VBOAttribMarker::DATA_TYPE::FLOAT, false);
     m_quad->buildVAO();
 
-    // We will use this VAO to draw our particles' triangles.
-    // It doesn't need any data associated with it, so we don't have to make a full VAO instance
-    glGenVertexArrays(1, &m_particlesVAO);
     // TODO [Task 13] Create m_particlesFBO1 and 2 with std::make_shared
     m_chemicalsFBO1 = std::make_shared<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_resolutionX, m_resolutionY, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE, TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
     m_chemicalsFBO2 = std::make_shared<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_resolutionX, m_resolutionY, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE, TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
@@ -164,8 +154,6 @@ void GLWidget::drawChemicals(std::shared_ptr<FBO> FBO) {
 void GLWidget::resizeGL(int w, int h) {
     m_width = w;
     m_height = h;
-
-    rebuildMatrices();
 }
 
 // Sets the viewport to ensure that {0,0} is always in the center of the viewport
@@ -175,31 +163,4 @@ void GLWidget::setParticleViewport() {
     int x = (m_width - maxDim) / 2.0f;
     int y = (m_height - maxDim) / 2.0f;
     glViewport(x, y, maxDim, maxDim);
-}
-
-/// Mouse interaction code below.
-
-void GLWidget::mousePressEvent(QMouseEvent *event) {
-    m_prevMousePos = event->pos();
-}
-
-void GLWidget::mouseMoveEvent(QMouseEvent *event) {
-    m_angleX += 3 * (event->x() - m_prevMousePos.x()) / (float) width();
-    m_angleY += 3 * (event->y() - m_prevMousePos.y()) / (float) height();
-    m_prevMousePos = event->pos();
-    rebuildMatrices();
-}
-
-void GLWidget::wheelEvent(QWheelEvent *event) {
-    m_zoom -= event->delta() / 100.f;
-    rebuildMatrices();
-}
-
-void GLWidget::rebuildMatrices() {
-    m_view = glm::translate(glm::vec3(0, 0, -m_zoom)) *
-             glm::rotate(m_angleY, glm::vec3(1,0,0)) *
-             glm::rotate(m_angleX, glm::vec3(0,1,0));
-
-    m_projection = glm::perspective(0.8f, (float)width()/height(), 0.1f, 100.f);
-    update();
 }

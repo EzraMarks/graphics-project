@@ -75,14 +75,8 @@ HEADERS += \
 FORMS +=
 
 OTHER_FILES += \
-    shaders/phong.frag \
-    shaders/phong.vert \
-    shaders/horizontalBlur.frag \
-    shaders/verticalBlur.frag \
     shaders/texture.frag \
-    shaders/quad.vert \
-    shaders/particles_draw.frag \
-    shaders/particles_draw.vert
+    shaders/quad.vert
 
 RESOURCES += \
     shaders/shaders.qrc
