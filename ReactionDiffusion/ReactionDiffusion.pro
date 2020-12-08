@@ -1,5 +1,5 @@
 QT += core gui opengl
-TARGET = lab7
+TARGET = ReactionDiffusion
 TEMPLATE = app
 
 QMAKE_CXXFLAGS += -std=c++14
@@ -72,7 +72,7 @@ HEADERS += \
     src/settings.h \
     ../glew-1.10.0/include/GL/glew.h
 
-FORMS += src/mainwindow.ui
+FORMS +=
 
 OTHER_FILES += \
     shaders/phong.frag \

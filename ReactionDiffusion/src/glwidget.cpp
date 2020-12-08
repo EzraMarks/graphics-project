@@ -10,7 +10,6 @@
 #include "openglshape.h"
 #include "gl/textures/Texture2D.h"
 #include "gl/shaders/ShaderAttribLocations.h"
-#include "sphere.h"
 
 using namespace CS123::GL;
 
