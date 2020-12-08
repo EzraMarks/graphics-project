@@ -18,6 +18,11 @@ void Settings::loadSettingsOrDefaults() {
     feedRate = s.value("feedRate", defaultFeedRate).toFloat();
     killRate = s.value("killRate", defaultKillRate).toFloat();
     imagePath = s.value("imagePath", QString()).toString();
+    int colorR = s.value("colorR", defaultColor.red()).toInt();
+    int colorG = s.value("colorG", defaultColor.green()).toInt();
+    int colorB = s.value("colorB", defaultColor.blue()).toInt();
+    color = QColor(colorR, colorG, colorB);
+
     isFirstPass = true;
 }
 
@@ -29,4 +34,7 @@ void Settings::saveSettings() {
     s.setValue("feedRate", feedRate);
     s.setValue("killRate", killRate);
     s.setValue("imagePath", imagePath);
+    s.setValue("colorR", color.red());
+    s.setValue("colorG", color.green());
+    s.setValue("colorB", color.blue());
 }

@@ -18,7 +18,7 @@ GLWidget::GLWidget(QGLFormat format, QWidget *parent)
       m_width(width()), m_height(height()),
       m_quad(nullptr),
       m_chemicalsFBO1(nullptr), m_chemicalsFBO2(nullptr),
-      m_evenPass(true), m_resolutionX(1024), m_resolutionY(1024)
+      m_evenPass(true)
 {
 }
 
@@ -59,8 +59,8 @@ void GLWidget::initializeGL() {
     m_quad->buildVAO();
 
     // TODO [Task 13] Create m_particlesFBO1 and 2 with std::make_shared
-    m_chemicalsFBO1 = std::make_shared<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_resolutionX, m_resolutionY, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE, TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
-    m_chemicalsFBO2 = std::make_shared<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_resolutionX, m_resolutionY, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE, TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
+    m_chemicalsFBO1 = std::make_shared<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_width, m_height, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE, TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
+    m_chemicalsFBO2 = std::make_shared<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_width, m_height, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE, TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
 }
 
 void GLWidget::paintGL() {
@@ -80,18 +80,26 @@ void GLWidget::paintGL() {
 }
 
 void GLWidget::initChemicals(std::shared_ptr<FBO> FBO) {
-    QImage img = QImage(settings.imagePath); // TODO: Add error checking
+    QImage image = QImage(settings.imagePath); // TODO: Add error checking
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width(), img.height(), 0, GL_BGRA, GL_UNSIGNED_BYTE, img.bits());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0, GL_BGRA, GL_UNSIGNED_BYTE, image.bits());
 
     FBO->bind();
     glUseProgram(m_chemicalInitProgram);
 
-    GLint locTex = glGetUniformLocation(m_chemicalInitProgram, "tex");
-    glUniform1i(locTex, 0);
+    GLint locImage = glGetUniformLocation(m_chemicalInitProgram, "image");
+    glUniform1i(locImage, 0);
+    GLint locImageWidth = glGetUniformLocation(m_chemicalInitProgram, "imageWidth");
+    glUniform1i(locImageWidth, image.width());
+    GLint locImageHeight = glGetUniformLocation(m_chemicalInitProgram, "imageHeight");
+    glUniform1i(locImageHeight, image.height());
+    GLint locCanvasWidth = glGetUniformLocation(m_chemicalInitProgram, "canvasWidth");
+    glUniform1i(locCanvasWidth, m_width);
+    GLint locCanvasHeight = glGetUniformLocation(m_chemicalInitProgram, "canvasHeight");
+    glUniform1i(locCanvasHeight, m_height);
 
     m_quad->draw();
     FBO->unbind();
@@ -105,10 +113,10 @@ void GLWidget::updateChemicals(std::shared_ptr<FBO> prevFBO, std::shared_ptr<FBO
     prevFBO->getColorAttachment(0).bind();
 
     // Sends uniforms containing the previous state of the simulation
-    GLint locResolutionX = glGetUniformLocation(m_chemicalUpdateProgram, "resolutionX");
-    glUniform1i(locResolutionX, m_resolutionX);
-    GLint locResolutionY = glGetUniformLocation(m_chemicalUpdateProgram, "resolutionY");
-    glUniform1i(locResolutionY, m_resolutionY);
+    GLint locWidth = glGetUniformLocation(m_chemicalUpdateProgram, "width");
+    glUniform1i(locWidth, m_width);
+    GLint logHeight = glGetUniformLocation(m_chemicalUpdateProgram, "height");
+    glUniform1i(logHeight, m_height);
     GLint locPrevChemicals = glGetUniformLocation(m_chemicalUpdateProgram, "prevChemicals");
     glUniform1i(locPrevChemicals, 0);
 
@@ -133,17 +141,18 @@ void GLWidget::drawChemicals(std::shared_ptr<FBO> FBO) {
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
     glUseProgram(m_chemicalDrawProgram);
-    setParticleViewport();
 
     glActiveTexture(GL_TEXTURE0);
     FBO->getColorAttachment(0).bind(); // TODO: unbind?
 
     GLint locTex = glGetUniformLocation(m_chemicalDrawProgram, "tex");
     glUniform1i(locTex, 0);
-    GLint locResolutionX = glGetUniformLocation(m_chemicalDrawProgram, "resolutionX");
-    glUniform1i(locResolutionX, m_resolutionX);
-    GLint locResolutionY = glGetUniformLocation(m_chemicalDrawProgram, "resolutionY");
-    glUniform1i(locResolutionY, m_resolutionY);
+    GLint locWidth = glGetUniformLocation(m_chemicalDrawProgram, "width");
+    glUniform1i(locWidth, m_width);
+    GLint locHeight = glGetUniformLocation(m_chemicalDrawProgram, "height");
+    glUniform1i(locHeight, m_height);
+    GLint locColor = glGetUniformLocation(m_chemicalDrawProgram, "color");
+    glUniform3f(locColor, settings.color.red() / 255.f, settings.color.green() / 255.f, settings.color.blue() / 255.f);
 
     m_quad->draw();
     FBO->getColorAttachment(0).unbind();
@@ -154,13 +163,8 @@ void GLWidget::drawChemicals(std::shared_ptr<FBO> FBO) {
 void GLWidget::resizeGL(int w, int h) {
     m_width = w;
     m_height = h;
-}
 
-// Sets the viewport to ensure that {0,0} is always in the center of the viewport
-// in clip space, and to ensure that the aspect ratio is 1:1
-void GLWidget::setParticleViewport() {
-    int maxDim = std::max(m_width, m_height);
-    int x = (m_width - maxDim) / 2.0f;
-    int y = (m_height - maxDim) / 2.0f;
-    glViewport(x, y, maxDim, maxDim);
+    m_chemicalsFBO1 = std::make_shared<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_width, m_height, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE, TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
+    m_chemicalsFBO2 = std::make_shared<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_width, m_height, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE, TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
+    settings.isFirstPass = true;
 }

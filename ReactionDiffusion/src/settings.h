@@ -2,6 +2,7 @@
 #define SETTINGS_H
 
 #include <QObject>
+#include <QColor>
 
 // Enumeration values for the modes from which the user can choose in the GUI.
 enum Mode
@@ -35,6 +36,7 @@ struct Settings {
     const float defaultDiffusionRateB = 0.5;
     const float defaultFeedRate = 0.55;
     const float defaultKillRate = 0.62;
+    const QColor defaultColor = QColor(255, 174, 12);
 
 
     // Current simulation parameters
@@ -46,6 +48,7 @@ struct Settings {
     float killRate;
     bool isFirstPass;
     QString imagePath;
+    QColor color;
 };
 
 // The global Settings object, will be initialized by MainWindow

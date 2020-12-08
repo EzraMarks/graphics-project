@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QList>
 #include "glwidget.h"
+#include <QColor>
 
 namespace Ui {
     class MainWindow;
@@ -30,6 +31,8 @@ protected:
 private slots:
     void resetSimulation();
     void resetParameters();
+    void openColorDialog();
+    void selectColor(const QColor &color);
 
 private:
     Ui::MainWindow *m_ui;

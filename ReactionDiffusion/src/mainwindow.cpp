@@ -84,3 +84,12 @@ void MainWindow::fileOpen() {
         settings.isFirstPass = true;
     }
 }
+
+void MainWindow::openColorDialog() {
+    m_ui->colorDialog->open();
+}
+
+void MainWindow::selectColor(const QColor &color) {
+    settings.color = color;
+}
+

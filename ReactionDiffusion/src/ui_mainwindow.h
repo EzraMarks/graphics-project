@@ -16,6 +16,7 @@
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QColorDialog>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,6 +61,10 @@ public:
 
     // loadImage
     QPushButton *loadImageButton;
+
+    // color
+    QColorDialog *colorDialog;
+    QPushButton *openColorDialogButton;
 
     // resetSimulation
     QPushButton *resetSimulationButton;
@@ -106,7 +111,7 @@ public:
         dockWidgetContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
         groupBox = new QGroupBox(dockWidgetContents);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        groupBox->setGeometry(QRect(10, 10, 160, 420));
+        groupBox->setGeometry(QRect(10, 10, 160, 452));
 
         // dt
         dtLabel  = new QLabel(groupBox);
@@ -189,6 +194,16 @@ public:
         loadImageButton->setText("Load Image");
         loadImageButton->setGeometry(QRect(left, top(height + 3*gap), width, height));
         QObject::connect(loadImageButton, SIGNAL(clicked()), MainWindow, SLOT(fileOpen()));
+
+        // color
+        colorDialog = new QColorDialog(groupBox);
+        QObject::connect(colorDialog, SIGNAL(currentColorChanged(QColor)), MainWindow, SLOT(selectColor(QColor)));
+
+        openColorDialogButton = new QPushButton(groupBox);
+        openColorDialogButton->setObjectName(QString::fromUtf8("openColorDialog"));
+        openColorDialogButton->setText("Select Color");
+        openColorDialogButton->setGeometry(QRect(left, top(height + gap), width, height));
+        QObject::connect(openColorDialogButton, SIGNAL(clicked()), MainWindow, SLOT(openColorDialog()));
 
         // resetSimulation
         resetSimulationButton = new QPushButton(groupBox);
