@@ -70,8 +70,7 @@ HEADERS += \
     cs123_lib/sphere.h \
     src/databinding.h \
     src/settings.h \
-    ../glew-1.10.0/include/GL/glew.h \
-    src/ui_mainwindow.h
+    ../glew-1.10.0/include/GL/glew.h
 
 FORMS +=
 

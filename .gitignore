@@ -3,6 +3,5 @@ Makefile
 Makefile.*
 object_script.*
 debug/
-release/
 *.pro.user
 *.ini
