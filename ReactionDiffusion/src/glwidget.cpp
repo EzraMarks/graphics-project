@@ -41,9 +41,6 @@ void GLWidget::initializeGL() {
     m_chemicalDrawProgram = ResourceLoader::createShaderProgram(
                 ":/shaders/quad.vert", ":/shaders/chemicals_draw.frag");
 
-    // TODO: [Task 6] Fill in the positions and UV coordinates to draw a fullscreen quad
-    // We've already set the vertex attributes for you, so be sure to follow those specifications
-    // (triangle strip, 4 vertices, position followed by UVs)
     std::vector<GLfloat> quadData = {-1,  1, 0,
                                       0,  1,
                                      -1, -1, 0,
@@ -58,7 +55,6 @@ void GLWidget::initializeGL() {
     m_quad->setAttribute(ShaderAttrib::TEXCOORD0, 2, 3*sizeof(GLfloat), VBOAttribMarker::DATA_TYPE::FLOAT, false);
     m_quad->buildVAO();
 
-    // TODO [Task 13] Create m_particlesFBO1 and 2 with std::make_shared
     m_chemicalsFBO1 = std::make_shared<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_width, m_height, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE, TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
     m_chemicalsFBO2 = std::make_shared<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_width, m_height, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE, TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
 }
@@ -106,7 +102,6 @@ void GLWidget::initChemicals(std::shared_ptr<FBO> FBO) {
 }
 
 void GLWidget::updateChemicals(std::shared_ptr<FBO> prevFBO, std::shared_ptr<FBO> nextFBO) {
-    // TODO [Task 14] Move the particles from prevFBO to nextFBO while updating them
     nextFBO->bind();
     glUseProgram(m_chemicalUpdateProgram);
     glActiveTexture(GL_TEXTURE0);
@@ -128,7 +123,7 @@ void GLWidget::updateChemicals(std::shared_ptr<FBO> prevFBO, std::shared_ptr<FBO
     GLint locDiffusionRateB = glGetUniformLocation(m_chemicalUpdateProgram, "diffusionRateB");
     glUniform1f(locDiffusionRateB, settings.diffusionRateB);
     GLint locFeedRate = glGetUniformLocation(m_chemicalUpdateProgram, "feedRate");
-    glUniform1f(locFeedRate, settings.feedRate / 10.f); // TODO: this is shitty style
+    glUniform1f(locFeedRate, settings.feedRate / 10.f);
     GLint locKillRate = glGetUniformLocation(m_chemicalUpdateProgram, "killRate");
     glUniform1f(locKillRate, settings.killRate / 10.f);
 
@@ -143,7 +138,7 @@ void GLWidget::drawChemicals(std::shared_ptr<FBO> FBO) {
     glUseProgram(m_chemicalDrawProgram);
 
     glActiveTexture(GL_TEXTURE0);
-    FBO->getColorAttachment(0).bind(); // TODO: unbind?
+    FBO->getColorAttachment(0).bind();
 
     GLint locTex = glGetUniformLocation(m_chemicalDrawProgram, "tex");
     glUniform1i(locTex, 0);

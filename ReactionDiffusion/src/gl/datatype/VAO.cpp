@@ -29,8 +29,7 @@ VAO::VAO(const VBO &vbo, const IBO &ibo, int numberOfVerticesToRender) :
 {
     // TODO [OPTIONAL]
     // There's another way of drawing with OpenGL that uses IBOs,
-    // or Index Buffer Objects.  Feel free to look them up or ask us
-    // about them if you're curious!
+    // or Index Buffer Objects.
     // This constructor should be almost identical to the one above,
     // just also bind the IBO after binding the vbo (and unbind it)
 }
@@ -78,7 +77,7 @@ void VAO::draw(int count) {
             break;
         case VAO::DRAW_INDEXED:
             // TODO [OPTIONAL]
-            // If you want to use IBO's, you'll need to call glDrawElements here
+            // If using IBOs, call glDrawElements here
             break;
     }
 }
